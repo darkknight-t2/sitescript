@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/09/16
-// @version     0.4
+// @date        2010/08/29
+// @version     0.5
 // ==/SiteScript==
 
 
@@ -95,7 +95,7 @@ function getVideoDetail( url ) {
     
     text.match( /<title>(.*?)<\/title>/i );
     var title = RegExp.$1;
-    title = title.replace( /\s+ファイルマン/, '' );
+    title = title.replace( / -.*/, '' );
     
     text.match( /Flash\('youtubeid=&id=(.*)&sv=(.*)&dom.*'/ );
     var id = RegExp.$1;
