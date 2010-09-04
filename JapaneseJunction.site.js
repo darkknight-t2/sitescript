@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2009/03/22
-// @version     0.1
+// @date        2009/09/04
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -93,6 +93,9 @@ CravingSiteScript.prototype = {
 
 
 function isSiteUrl( url ) {
+    if ( url.match( /http:\/\/video\.japanesejunction\.com\/videos\/\d+\// ) ) {
+        return true;
+    }
     if ( url.match( /http:\/\/video\.japanesejunction\.com\/play\.php\?vid=\d+/ ) ) {
         return true;
     }
@@ -110,8 +113,19 @@ function getVideoDetail( url ) {
     text.match( /<span class="font5_12">(.*?)<\/span>/ );
     var title = craving.decodeHtml( RegExp.$1 );
     
-    text.match( /so\.addVariable\('file','(.*?)'\)/ );
-    var realUrl = RegExp.$1;
+    if ( !text.match( /so\.addVariable\('file','(.*?)'\)/ ) ) {
+        return null;
+    }
+    var file = RegExp.$1;
+    
+    var streamer;
+    if ( text.match( /so\.addVariable\("streamer","(.*?)"\)/ ) ) {
+       streamer = RegExp.$1;
+    }
+    else {
+       streamer = "http://server1.video.japanesejunction.com/xmoov.php";
+    }
+    var realUrl = streamer + "?file=" + file + "&start=0"; 
     
     return { videoTitle0: title, videoUrl0: realUrl };
 }
