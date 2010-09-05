@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2009/07/06
-// @version     0.1
+// @date        2010/09/05
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -107,10 +107,10 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<meta name="title" content="(.*?)"/ );
+    text.match( /<title>GayForIt\.com - (.*?)<\/title>/ );
     var title = RegExp.$1;
     
-    text.match( /var nuevoplayer='.*config=(.*?)'/ );
+    text.match( /var nv='http:\/\/www\.gayforit\.com\/nvp\/player\/nvplayer\.swf\?config=(.*?)';var so/ );
     var xmlUrl = RegExp.$1;
     
     text = craving.getResponseText( xmlUrl );
@@ -128,7 +128,7 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<location>(.*?)<\/location>/ );
+    text.match( /<file>(.*?)<\/file>/ );
     var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
