@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2009/06/29
-// @version     0.1
+// @date        2010/09/05
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -93,7 +93,7 @@ CravingSiteScript.prototype = {
 
 
 function isSiteUrl( url ) {
-    if ( url.match( /http:\/\/www\.efukt\.com\/\d+.*\.html/ ) ) {
+    if ( url.match( /http:\/\/(www\.)?efukt\.com\/\d+.*\.html/ ) ) {
         return true;
     }
 }
@@ -110,7 +110,7 @@ function getVideoDetail( url ) {
     text.match( /<h1><div id="movie_title" style=".*">"(.*?)"<\/div><\/h1>/ );
     var title = RegExp.$1;
     
-    text.match( /so\.addParam\('flashvars','&author=efukt\.com&file=(.*flv)&.*'\)/ );
+    text.match( /flashvars\.file\s*?=\s*?"([^"]+)"/ );
     var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
