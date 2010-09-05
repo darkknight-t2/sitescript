@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/09/18
-// @version     0.4
+// @date        2010/09/05
+// @version     0.5
 // ==/SiteScript==
 
 
@@ -96,7 +96,7 @@ function getVideoDetail( url ) {
     text.match( /<strong class="ptitle">(.*?)<\/strong>/ );
     var title = RegExp.$1;
     
-    text.match( /value="videoName=(.*?)(&.*)?"/ );
+    text.match( /'FlashVars', 'file=(.*?)(&.*)?',/ );
     var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
