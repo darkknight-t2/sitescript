@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/11/24
-// @version     0.2
+// @date        2010/09/05
+// @version     0.3
 // ==/SiteScript==
 
 
@@ -91,13 +91,22 @@ CravingSiteScript.prototype = {
 
 
 function isSiteUrl( url ) {
-    if ( url.match( /http:\/\/www\.gaytube\.com\/media\/\d+\/.*/ ) ) {
+    if ( url.match( /http:\/\/(www.)?gaytube\.com\/media\/\d+/ ) ) {
         return true;
     }
 }
 
 
 function getVideoDetail( url ) {
+    var mediaId;
+    if ( url.match( /http:\/\/(www.)?gaytube\.com\/media\/(\d+)/ ) ) {
+        mediaId = RegExp.$2;
+    }
+    else {
+        return null;
+    }
+    url = url.replace( /^http:\/\/gaytube\.com\//, "http://www.gaytube.com/" );
+    
     var craving = new CravingSiteScript();
     var text = craving.getResponseText( url );
     
@@ -105,11 +114,22 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<div class='maintitle'>(.*?)<\/div>/ );
-    var title = RegExp.$1;
+    var title;
+    if ( text.match( /<div class='maintitle'>(.*?)<a href/ ) ) {
+        title = RegExp.$1;
+    }
+    else {
+        title = "gaytube_" + mediaId;
+    }
+    title = title.replace( /[\\\/:*?"<>|]/g, "_" );
     
-    text.match( /var playerConfURL = '(.*?)'/ );
-    var xmlUrl = RegExp.$1;
+    var xmlUrl;
+    if ( text.match( /so\.addVariable\('config'\s*,\s*'([^']+)'/ ) ) {
+        xmlurl = RegExp.$1;
+    }
+    else {
+        xmlUrl = "http://www.gaytube.com/flv_player/data/playerConfig/" + mediaId + ".xml";
+    }
     
     text = craving.getResponseText( xmlUrl );
     
@@ -117,16 +137,10 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    var realUrl;
-    if ( text.match( /<_video autoplay.*path="(.*?)">/ ) != null ) {
-        realUrl = RegExp.$1;
-    }
-    else if ( text.match( /<lighttpd SD="(.*?)"/ ) != null ) {
-        realUrl = RegExp.$1;
-    }
-    else {
+    if ( !text.match( /<file>(.*?)<\/file>/ ) ) {
         return null;
     }
+    var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
 }
