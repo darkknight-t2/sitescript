@@ -4,9 +4,8 @@
 // @author      DarkKnight
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
-// @description 要プロキシ
-// @date        2008/01/08
-// @version     0.4
+// @date        2010/09/05
+// @version     0.5
 // ==/SiteScript==
 
 
@@ -105,7 +104,7 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<h2>(.*?)<\/h2>/ );
+    text.match( /<div class="line">\s*<h2>(.*?)<\/h2>/ );
     var title = RegExp.$1;
     
     text.match( /so\.addVariable\('config',\s*'(.*?)'/ );
@@ -118,7 +117,7 @@ function getVideoDetail( url ) {
     }
     
     text.match( /<file>(.*?)<\/file>/ );
-    var realUrl = craving.decodeHtml( RegExp.$1 );
+    var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
 }
