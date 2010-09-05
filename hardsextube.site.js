@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2009/02/16
-// @version     0.2
+// @date        2010/09/05
+// @version     0.3
 // ==/SiteScript==
 
 
@@ -91,7 +91,7 @@ CravingSiteScript.prototype = {
 
 
 function isSiteUrl( url ) {
-    if ( url.match( /http:\/\/www\.hardsextube\.com\/video\/\d+\/.*/ ) ) {
+    if ( url.match( /http:\/\/(www\.)?hardsextube\.com\/video\/\d+\/.*/ ) ) {
         return true;
     }
 }
@@ -105,20 +105,29 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<h1>(.*?)<\/h1>/ );
-    var title = RegExp.$1;
-    
-    text.match( /<param name="flashvars" value="config=(.*?)">/ );
-    var xmlUrl = RegExp.$1;
-    
-    text = craving.getResponseText( xmlUrl );
-    
-    if ( text == null ) {
+    var videoId;
+    if ( url.match( /http:\/\/(www\.)?hardsextube\.com\/video\/(\d+)\/.*/ ) ) {
+        videoId = RegExp.$1;
+    }
+    else {
         return null;
     }
     
-    text.match( /<PLAYER_SETTINGS Name="FLVPath" Value="(.*?)"/ );
-    var realUrl = RegExp.$1;
+    var title;
+    if ( text.match( /<h1.*?>(.*?)<\/h1>/ ) ) {
+        title = RegExp.$1;
+    }
+    else {
+        title = "hardsextube_" + videoId;
+    }
+    
+    var realUrl;
+    if ( text.match( /flvpathValue\s*:\s*"([^"]+)"/ ) ) {
+        realUrl = RegExp.$1;
+    }
+    else {
+        return null;
+    }
     
     return { videoTitle0: title, videoUrl0: realUrl };
 }
