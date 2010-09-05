@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/12/14
-// @version     0.1
+// @date        2010/09/05
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -171,14 +171,30 @@ function decrypt( str, key1, key2 ) {
 };
 
 
+function decodeTitle( title ){
+    title = title.replace( /\+/g, " " );
+    for ( var i = 0; i < 4; i++ ) {
+        try {
+            var result = decodeURIComponent( title );
+            return result;
+        }
+        catch( e ) {
+            title = title.substring( 0, title.lastIndexOf( "%" ) );
+        }
+    }
+}
+
+
 function isSiteUrl( url ) {
-    if ( url.match( /http:\/\/www\.megavideo\.com\/\?v=.*/ ) ) {
+    if ( url.match( /http:\/\/(www\.)?megavideo\.com\/\?v=.*/ ) ) {
         return true;
     }
 }
 
 
 function getVideoDetail( url ) {
+    url = url.replace( /http:\/\/megavideo\.com\//, "http://www.megavideo.com/" );
+    
     var craving = new CravingSiteScript();
     var text = craving.getResponseText( url );
     
@@ -186,20 +202,25 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /flashvars\.title = "(.*?)";/ );
-    var title = decodeURIComponent( RegExp.$1 );
-    title = title.replace( /\+/g, ' ' );
+    var title;
+    if ( text.match( /flashvars\.title = "(.*?)";/ ) ){
+        title = decodeTitle( RegExp.$1 );
+    } else {
+        url.match( /http:\/\/www\.megavideo\.com\/\?v=(.*)/ );
+        title = "megavideo_" + RegExp.$1;
+    } 
+    title = title.replace( /[\\\/:*?"<>|]/g, "_" );
     
-    text.match( /flashvars\.un = "(.*?)";/ );
+    if ( !text.match( /flashvars\.un = "(.*?)";/ ) ) { return null; }
     var un = RegExp.$1;
     
-    text.match( /flashvars\.k1 = "(.*?)";/ );
+    if ( !text.match( /flashvars\.k1 = "(.*?)";/ ) ) { return null; }
     var key1 = RegExp.$1;
     
-    text.match( /flashvars\.k2 = "(.*?)";/ );
+    if ( !text.match( /flashvars\.k2 = "(.*?)";/ ) ) { return null; }
     var key2 = RegExp.$1;
     
-    text.match( /flashvars\.s = "(.*?)";/ );
+    if ( !text.match( /flashvars\.s = "(.*?)";/ ) ) { return null; }
     var server = RegExp.$1;
     
     var realUrl = "http://www" + server + ".megavideo.com/files/" + decrypt( un, key1, key2 ) + "/";
