@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/11/02
-// @version     0.1
+// @date        2010/09/05
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -91,13 +91,15 @@ CravingSiteScript.prototype = {
 
 
 function isSiteUrl( url ) {
-    if ( url.match( /http:\/\/badjojo\.com\/\?action=playVideo&itemId=\d+/ ) ) {
+    if ( url.match( /http:\/\/(www\.)?badjojo\.com\/\d+/ ) ) {
         return true;
     }
 }
 
 
 function getVideoDetail( url ) {
+    url = url.replace( /^http:\/\/badjojo\.com\//, "http://www.badjojo.com/" );
+    
     var craving = new CravingSiteScript();
     var text = craving.getResponseText( url );
     
@@ -109,7 +111,7 @@ function getVideoDetail( url ) {
     var title = RegExp.$1;
     
     text.match( /so\.addVariable\("styleURL", "(.*?)"\);/ );
-    var styleUrl = "http://badjojo.com" + decodeURIComponent( RegExp.$1 );
+    var styleUrl = "http://www.badjojo.com" + decodeURIComponent( RegExp.$1 );
     
     text = craving.getResponseText( styleUrl );
     
