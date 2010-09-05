@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/09/11
-// @version     0.2
+// @date        2010/09/05
+// @version     0.3
 // ==/SiteScript==
 
 
@@ -79,7 +79,7 @@ CravingSiteScript.prototype = {
 
 
 function isSiteUrl( url ) {
-    if ( url.match( /http:\/\/www\.watchme\.tv\/v\/\?mid=.*/ ) ) {
+    if ( url.match( /http:\/\/www\.watchme\.tv\/v2?\/\?mid=.*/ ) ) {
         return true;
     }
 }
