@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2009/02/25
-// @version     0.1
+// @date        2010/09/05
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -108,7 +108,7 @@ function getVideoDetail( url ) {
     text.match( /<h2 style='clear: both;' align='left'>(.*?)<\/h2>/ );
     var title = RegExp.$1;
     
-    text.match( /so\.addVariable\("content_video","(.*?)"\)/ );
+    text.match( /so\.addVariable\("file","(.*?)"\)/ );
     var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
