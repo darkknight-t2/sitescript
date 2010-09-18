@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2009/03/23
-// @version     0.1
+// @date        2010/09/18
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -93,13 +93,18 @@ CravingSiteScript.prototype = {
 
 
 function isSiteUrl( url ) {
-    if ( url.match( /http:\/\/www\.moviefap\.com\/videos\/.*\/.*\.html/ ) ) {
+    if ( url.match( /http:\/\/(www\.)?moviefap\.com\/videos\/[^\/]+\/[^\/]*\.html?/ ) ) {
         return true;
     }
 }
 
 
 function getVideoDetail( url ) {
+    if ( !url.match( /http:\/\/(www\.)?moviefap\.com\/videos\/([^\/]+)\/[^\/]*\.html?/ ) ) {
+        return null;
+    }
+    var viewkey = RegExp.$2;
+    
     var craving = new CravingSiteScript();
     var text = craving.getResponseText( url );
     
@@ -107,10 +112,41 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<h1>(.*?)<\/h1>/ );
-    var title = RegExp.$1;
+    var title;
+    if ( text.match( /<h1>(.*?)<\/h1>/ ) ) {
+        title = RegExp.$1;
+    }
+    else {
+        title = "moviefap_" + viewkey;
+    }
+    title = title.replace( /[\\\/:*?"<>|]/g, "_" );
     
-    text.match( /so\.addVariable\('file','(.*?)'\)/ );
+    var domain;
+    if ( text.match( /SWFObject\('(http:\/\/[^\/]+)\/[^']*'/ ) ) {
+        domain = RegExp.$1;
+    }
+    else {
+        domain = "http://cdn.moviefap.com";
+    }
+    
+    var xmlpath;
+    if ( text.match( /so\.addVariable\('config'\s*?,\s*?'([^']+)'/ ) ) {
+        xmlpath = RegExp.$1;
+    }
+    else {
+        return null;
+    }
+    var xmlUrl = decodeURIComponent( domain + "/" + xmlpath );
+    
+    text = craving.getResponseText( xmlUrl );
+    
+    if ( text == null ) {
+        return null;
+    }
+    
+    if ( !text.match( /<file>(.*?)<\/file>/ ) ) {
+        return null;
+    }
     var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
