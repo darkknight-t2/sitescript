@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2009/02/16
-// @version     0.2
+// @date        2010/09/18
+// @version     0.3
 // ==/SiteScript==
 
 
@@ -111,19 +111,10 @@ function getVideoDetail( url ) {
     text.match( /<h1 class="title">(.*?)<\/h1>/ );
     var title = RegExp.$1;
     
-    if ( text.match( /to\.addVariable\("options","http:\/\/www\.keezmovies\.com\/watch_player\.php\?id=(\d+)"\)/ ) == null ) {
+    if ( !text.match( /flashvars\.video_url\s*?=\s*?('|")(.*?)\1/ ) ) {
         return null;
     }
-    
-    var xmlUrl = "http://www.keezmovies.com/watch_player.php?id=" + RegExp.$1;
-    text = craving.getResponseText( xmlUrl );
-    
-    if ( text == null ) {
-        return null;
-    }
-    
-    text.match( /<flv_url>(.*?)<\/flv_url>/ );
-    var realUrl = RegExp.$1;
+    var realUrl = RegExp.$2;
     
     return { videoTitle0: title, videoUrl0: realUrl };
 }
