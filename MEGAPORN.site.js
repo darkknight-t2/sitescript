@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/12/14
-// @version     0.2
+// @date        2010/09/18
+// @version     0.3
 // ==/SiteScript==
 
 
@@ -171,6 +171,20 @@ function decrypt( str, key1, key2 ) {
 };
 
 
+function decodeTitle( title ){
+    title = title.replace( /\+/g, " " );
+    for ( var i = 0; i < 4; i++ ) {
+        try {
+            var result = decodeURIComponent( title );
+            return result;
+        }
+        catch( e ) {
+            title = title.substring( 0, title.lastIndexOf( "%" ) );
+        }
+    }
+}
+
+
 function isSiteUrl( url ) {
     if ( url.match( /http:\/\/www\.megaporn\.com\/video\/\?v=.*/ ) ) {
         return true;
@@ -182,8 +196,10 @@ function isSiteUrl( url ) {
 
 
 function getVideoDetail( url ) {
-    if ( url.match( /http:\/\/wwwstatic\.megaporn\.com\/video\/mv_player\.swf\?image=.*&v=(.*?)&.*/ ) ) {
-        url = "http://www.megaporn.com/video/?v=" + RegExp.$1;
+    if ( url.match( /http:\/\/wwwstatic\.megaporn\.com\/video\/mv_player\.swf\?image=.*&v=.*/) ) {
+        url = url.replace( /http:\/\/wwwstatic\.megaporn\.com\/video\/mv_player\.swf\?image=.*&v=/ , "" );
+        url = url.replace( /&.*/ , "" );
+        url = "http://www.megaporn.com/video/?v=" + url;
     }
     
     var craving = new CravingSiteScript();
@@ -193,9 +209,15 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /flashvars\.title = "(.*?)";/ );
-    var title = decodeURIComponent( RegExp.$1 );
-    title = title.replace( /\+/g, ' ' );
+    var title;
+    if ( text.match( /flashvars\.title = "(.*?)";/ ) ){
+        title = decodeTitle( RegExp.$1 );
+    }
+    else {
+        url.match( /http:\/\/www\.megaporn\.com\/\?v=(.*)/ );
+        title = "megaporn_" + RegExp.$1;
+    } 
+    title = title.replace( /[\\\/:*?"<>|]/g, "_" );
     
     text.match( /flashvars\.un = "(.*?)";/ );
     var un = RegExp.$1;
