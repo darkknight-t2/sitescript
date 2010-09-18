@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2009/01/27
-// @version     0.1
+// @date        2010/09/18
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -105,10 +105,13 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<h1>[\s\S]*<td>(.*?)<\/td>[\s\S]*<\/h1>/ );
-    var title = RegExp.$1;
+    text.match( /<title>(.*?)<\/title>/ );
+    var title = RegExp.$1.replace( /^MoviesAnd\s*?-\s*?/, "" )
+                     .replace( /\s*?-\s*?Better than YouPorn and RedTube$/, "" );
     
-    text.match( /<a href="(http.*?)"><\/a><\/td>/ );
+    if ( !text.match( /so\.addVariable\("file"\s*?,\s*?"([^"]+)"/ ) ) {
+        return null;
+    }
     var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
