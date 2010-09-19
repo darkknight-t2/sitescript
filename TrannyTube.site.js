@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/11/05
-// @version     0.1
+// @date        2010/09/19
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -91,13 +91,19 @@ CravingSiteScript.prototype = {
 
 
 function isSiteUrl( url ) {
-    if ( url.match( /http:\/\/www\.trannytube\.com\/view_video\.php\?viewkey=.*/ ) ) {
+    if ( url.match( /http:\/\/(www\.)?trannytube\.com\/media\/\d+\/[^/]+\// ) ) {
         return true;
     }
 }
 
 
 function getVideoDetail( url ) {
+    url = url.replace( /http:\/\/trannytube.com\//, "http://www.trannytube.com/" );
+    if ( !url.match( /http:\/\/www\.trannytube\.com\/media\/(\d+)\/[^/]+\// ) ) {
+        return null;
+    }
+    var videoid = RegExp.$1;
+    
     var craving = new CravingSiteScript();
     var text = craving.getResponseText( url );
     
@@ -105,11 +111,19 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<div id="viewvideo-title">\r\n\s+(.*?)\r\n\s+<\/div>/ );
-    var title = RegExp.$1;
+    var title;
+    if ( text.match( /<title>(.*?)<\/title>/ ) ) {
+        title = RegExp.$1.replace( / free sex tube video at Tranny Tube/, "");
+    }
+    else {
+        title = "trannytube_" + videoid;
+    }
+    title = title.replace( /[\\\/:*?"<>|]/g, "_" );
     
-    text.match( /config\.php\?viewkey=.*&flv=(.*?)&playlist/ );
-    var realUrl = "http://www.trannytube.com" + RegExp.$1;
+    if ( !text.match( /so\.addVariable\('file',\s*?'([^']+)'/ ) ) {
+        return null;
+    }
+    var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
 }
