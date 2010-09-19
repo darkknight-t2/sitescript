@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/09/07
-// @version     0.4
+// @date        2010/09/19
+// @version     0.5
 // ==/SiteScript==
 
 
@@ -85,21 +85,8 @@ function getVideoDetail( url ) {
     text.match( /Description: (.*)</ );
     var title = RegExp.$1;
     
-    text.match( /param name="movie" value="(.*?)"/ );
-    var swfUrl = decodeURIComponent( RegExp.$1 );
-    
-    swfUrl.match( /&video=(.*)&videoembed_id/ );
-    var dataUrl = RegExp.$1;
-    
-    craving = new CravingSiteScript( dataUrl );
-    text = craving.getResponseText();
-    
-    if ( text == null ) {
-        return null;
-    }
-    
-    text.match( /video_id=(.*)&homeurl/ );
-    var realUrl = decodeURIComponent( RegExp.$1 );
+    text.match( /clip: \{\s*?url: "(.*?)",/ );
+    var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
 }
