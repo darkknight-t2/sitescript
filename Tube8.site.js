@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/11/02
-// @version     0.1
+// @date        2010/09/19
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -105,10 +105,11 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<h1 class="text" style="margin: 0;">(.*?)<\/h1>/ );
+    text.match( /<h1 class="main-title main-sprite-img">(.*?)<\/h1>/ );
     var title = RegExp.$1;
-    
-    text.match( /so\.addVariable\('videoUrl','(.*?)'\);/ );
+
+    text.match( /flashvars\.video_url = '(.*?)';/ );
+
     var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
