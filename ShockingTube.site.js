@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/12/04
-// @version     0.1
+// @date        2010/09/19
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -117,7 +117,7 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<PLAYER_SETTINGS Name="FLVPath" Value="(.*?)"/ );
+    text.match( /<PLAYER_SETTINGS\s+Name="FLVPath"\s+Value="(.*?)"/ );
     var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
