@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/12/12
-// @version     0.1
+// @date        2010/09/19
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -91,7 +91,7 @@ CravingSiteScript.prototype = {
 
 
 function isSiteUrl( url ) {
-    if ( url.match( /http:\/\/www\.theync\.com\/media\.php\?name=.*/ ) ) {
+    if ( url.match( /http:\/\/theync\.com\/media\.php\?name=.*/ ) ) {
         return true;
     }
 }
