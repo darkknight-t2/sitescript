@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/12/12
-// @version     0.1
+// @date        2010/09/19
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -105,12 +105,11 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<div align="center"><b>(.*?)<\/b>/ );
+    text.match( /<td align="center"[^>]*?><b>(.*?)<\/b>/ );
     var title = RegExp.$1;
     
     text.match( /s1\.addVariable\("file","(.*?)"\);/ );
-    var realUrl = "http://www.wimp.com";
-    realUrl += RegExp.$1;
+    var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
 }
