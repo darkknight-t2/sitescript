@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/10/28
-// @version     0.2
+// @date        2010/09/19
+// @version     0.3
 // ==/SiteScript==
 
 
@@ -96,7 +96,7 @@ CravingSiteScript.prototype = {
 
 
 function isSiteUrl( url ) {
-    if ( url.match( /http:\/\/.*\.xtube\.com\/watch.*\.php/ ) ) {
+    if ( url.match( /http:\/\/.*\.xtube\.com\/watch.*\.php/ ) && url.match( /[?|&]v=[^&]+/ ) ) {
         return true;
     }
 }
@@ -110,7 +110,7 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<h2>(.*?)<\/h2>/ );
+    text.match( /<div class="p_5px font_b_12px[^"]*">(.*?)<\/div>/ );
     var title = RegExp.$1;
     
     text.match( /so_s\.addVariable\("swfURL", "(.*?)"\)/ );
