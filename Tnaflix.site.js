@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/11/02
-// @version     0.2
+// @date        2010/09/19
+// @version     0.3
 // ==/SiteScript==
 
 
@@ -91,13 +91,34 @@ CravingSiteScript.prototype = {
 
 
 function isSiteUrl( url ) {
-    if ( url.match( /http:\/\/www\.tnaflix\.com\/view_video\.php\?viewkey=.*/ ) ) {
+    if (   url.match( /http:\/\/www\.tnaflix\.com\/view_video\.php\?/ )
+        && url.match( /viewkey=[^&]+/ )
+    ) {
+        return true;
+    }
+    if (   url.match( /http:\/\/premium\.tnaflix\.com\/premium_view\.php\?/ )
+        && url.match( /dvdid=[^&]+/ )
+    ) {
+        return true;
+    }
+    if ( url.match( /http:\/\/www\.tnaflix\.com\/.*video\d+/ ) ) {
         return true;
     }
 }
 
 
 function getVideoDetail( url ) {
+    var premium;
+    var id;
+    if ( url.match( /viewkey=([^&]+)/ ) ){
+        premium = false;
+        id = RegExp.$1;
+    } 
+    else if ( url.match( /dvdid=([^&]+)/ ) ) {
+        premium = true;
+        id = RegExp.$1;
+    }
+    
     var craving = new CravingSiteScript();
     var text = craving.getResponseText( url );
     
@@ -105,20 +126,39 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /<h1>(.*?)<\/h1>/g );
-    var title = RegExp.$1;
+    if ( id == null ) {
+        if ( !text.match( /id="vkey" name="vkey" value="(.*)"/ ) ) {
+            return null;
+        }
+        id = RegExp.$1;
+    }
     
-    text.match( /so\.addVariable\('config', '(.*?)'/ );
-    var xmlUrl = "http://www.tnaflix.com/" + decodeURIComponent( RegExp.$1 ) + new Date().getTime();
+    var title;
+    if ( premium && text.match( /<h2><span class="floatLeft">(.*?)<\/span>/ ) ) {
+        title = RegExp.$1;
+    }
+    else if ( !premium && text.match( /<h2 class="playIcon">(.*?)<\/h2>/ ) ) {
+        title = RegExp.$1;
+    }
+    else {
+        title = "tnaflix_" + id;
+    }
+    title = title.replace( /[\\\/:*?"<>|]/g, "_" );
+    
+    if ( !text.match( /so\.addVariable\('config', '(.*?)'/ ) ) {
+        return null;
+    }
+    var xmlUrl = RegExp.$1;
     
     text = craving.getResponseText( xmlUrl );
     
     if ( text == null ) {
         return null;
     }
-    
-    text.match( /<file>(.*?)<\/file>/ );
-    var realUrl = decodeURIComponent( RegExp.$1 ) + "&start=0&time=" + Math.random();
+    if ( !text.match( /<file>(.*?)<\/file>/ ) ) {
+        return null;
+    }
+    var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
 }
