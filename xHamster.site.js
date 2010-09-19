@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/09/15
-// @version     0.5
+// @date        2010/09/19
+// @version     0.6
 // ==/SiteScript==
 
 
@@ -96,12 +96,12 @@ function getVideoDetail( url ) {
     text.match( /<title>(.*)<\/title>/ );
     var title = RegExp.$1;
     
-    text.match( /so\.addVariable\('file',\s*'(.*?)'\)/ );
+    text.match( /'file': '(.*?)',/ );
     var fileName = RegExp.$1;
-    text.match( /so\.addVariable\('srv','(.*?)'\)/g );
+    text.match( /'srv': '(.*?)',/g );
     var server = RegExp.$1;
     
-    var realUrl = "http://dl" + server + ".xhamster.com/flv2/" + fileName;
+    var realUrl = server +"/flv2/" + fileName;
     
     return { videoTitle0: title, videoUrl0: realUrl };
 }
