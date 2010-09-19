@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2009/01/29
-// @version     0.1
+// @date        2010/09/19
+// @version     0.2
 // ==/SiteScript==
 
 
@@ -108,7 +108,7 @@ function getVideoDetail( url ) {
     text.match( /<h1>Video: <b>(.*?)<\/b><\/h1>/ );
     var title = craving.decodeHtml( RegExp.$1 );
     
-    text.match( /so\.addVariable\('flv','(.*?)'\)/ );
+    text.match( /class="download" href="(.*?)">Download / );
     var realUrl = RegExp.$1;
     
     return { videoTitle0: title, videoUrl0: realUrl };
