@@ -5,8 +5,8 @@
 // @authorUrl   http://darkknightlabs.com/
 // @scriptUrl   http://darkknightlabs.com/site-script/
 // @description 
-// @date        2008/11/02
-// @version     0.3
+// @date        2010/09/19
+// @version     0.4
 // ==/SiteScript==
 
 
@@ -108,13 +108,8 @@ function getVideoDetail( url ) {
     text.match( /<h1>(.*?)<\/h1>/ );
     var title = RegExp.$1;
     
-    text.match( /styleURL:"(.*?)"/ );
-    var styleUrl = decodeURIComponent( RegExp.$1 );
-    
-    text.match( /content_video:"(.*?)"/ );
-    var contentVideo = decodeURIComponent( RegExp.$1 );
-    
-    var xmlUrl = "http://www.spankwire.com" + styleUrl;
+    text.match( /<param name="flashvars" value=".*?settings=(.*?)css\/flvPlayer\.css&amp;videoPath=\.\.\/(.*?)"/ );
+    var xmlUrl = RegExp.$1 + decodeURIComponent( RegExp.$2 );
     
     text = craving.getResponseText( xmlUrl );
     
@@ -122,11 +117,8 @@ function getVideoDetail( url ) {
         return null;
     }
     
-    text.match( /config\.stream\{\r\n\tURL: (.*?);/ );
-    var realUrl = RegExp.$1 + contentVideo;
-    
-    text.match( /positionKey: (.*?);/ );
-    realUrl += decodeURIComponent( RegExp.$1 );
+    text.match( /<url>(.*?)<\/url>/ );
+    var realUrl = craving.decodeHtml( RegExp.$1 );
     
     return { videoTitle0: title, videoUrl0: realUrl };
 }
